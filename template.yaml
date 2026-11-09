@@ -36,9 +36,6 @@ spec:
           title: Repository Location
           type: string
           ui:field: RepoUrlPicker
-          ui:options:
-            allowedHosts:
-              - github.com
 
   # 2. Automated steps Backstage executes behind the scenes
   steps:
