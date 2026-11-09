@@ -1,0 +1,79 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: go-gin-template
+  title: Go Web App (Gin Framework)
+  description: Creates a production-ready Go web application using the Gin framework.
+  tags:
+    - go
+    - gin
+    - web
+spec:
+  owner: architecture-team
+  type: service
+
+  # 1. Inputs collected from the developer in the Backstage UI
+  parameters:
+    - title: Provide App Details
+      required:
+        - name
+        - description
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique name for your new Go microservice (e.g., payment-service).
+        description:
+          title: Description
+          type: string
+          description: A brief summary of what this microservice does.
+
+    - title: Choose Repository Location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+
+  # 2. Automated steps Backstage executes behind the scenes
+  steps:
+    # Step A: Download the skeleton source files
+    - id: fetch-base
+      name: Fetching Skeleton Structure
+      action: fetch:template
+      input:
+        url: ./ # Looks at the current repository context
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          githubOrg: ${{ parameters.repoUrl | parseRepoUrl | jsonpath '$.owner' }}
+
+    # Step B: Publish the rendered files to a brand new GitHub Repo
+    - id: publish
+      name: Creating GitHub Repository
+      action: publish:github
+      input:
+        allowedHosts:
+          - github.com
+        description: ${{ parameters.description }}
+        repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
+
+    # Step C: Register the brand new repository back into Backstage Catalog
+    - id: register
+      name: Registering Service in Backstage Catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.remoteUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+  # 3. Output presented to the user upon completion
+  output:
+    links:
+      - title: Open Repository in GitHub
+        url: ${{ steps.publish.output.remoteUrl }}
