@@ -51,8 +51,8 @@ spec:
         values:
           name: ${{ parameters.name }}
           description: ${{ parameters.description }}
-          #githubOrg: ${{ parameters.repoUrl | parseRepoUrl | jsonpath "$.owner" }}
           githubOrg: ${{ parameters.repoUrl | projectSlug }}
+          
     # Step B: Publish the rendered files to a brand new GitHub Repo
     - id: publish
       name: Creating GitHub Repository
