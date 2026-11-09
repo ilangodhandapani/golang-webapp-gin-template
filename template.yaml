@@ -51,7 +51,7 @@ spec:
         values:
           name: ${{ parameters.name }}
           description: ${{ parameters.description }}
-          githubOrg: ${{ parameters.repoUrl.split('?owner=')[1].split('&repo=')[0] }}
+          githubOrg: ${{ (parameters.repoUrl | parseRepoUrl).owner }}
           
     # Step B: Publish the rendered files to a brand new GitHub Repo
     - id: publish
