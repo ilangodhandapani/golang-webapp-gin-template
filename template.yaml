@@ -67,10 +67,12 @@ spec:
       name: Registering Service in Backstage Catalog
       action: catalog:register
       input:
-        catalogInfoUrl: ${{ steps.publish.output.remoteUrl }}/blob/main/catalog-info.yaml
+        repoUrl: ${{ steps.publish.output.repoUrl }}
+        # (Optional) If your catalog file is ever named something else or sits in a nested folder:
+        # catalogInfoPath: '/catalog-info.yaml' 
 
   # 3. Output presented to the user upon completion
   output:
     links:
       - title: Open Repository in GitHub
-        url: ${{ steps.publish.output.remoteUrl }}
+        url: ${{ steps.publish.output.repoUrl }}
