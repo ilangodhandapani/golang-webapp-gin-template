@@ -73,7 +73,7 @@ spec:
       name: Registering Service in Backstage Catalog
       action: catalog:register
       input:
-        repoContentsUrl: 'https://github.com'
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
         catalogInfoPath: '/catalog-info.yaml'
 
   # 3. Output presented to the user upon completion
